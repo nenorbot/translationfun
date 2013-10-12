@@ -9,7 +9,7 @@
             [cljs.core.async :as async :refer [<! >! chan close!]])
   (:require-macros
    [translationfun.macros :refer [with-alert]]
-   [cljs.core.async.macros :refer [go alt!]]))
+   [cljs.core.async.macros :refer [go]]))
 
 (def translation-id 0)
 
