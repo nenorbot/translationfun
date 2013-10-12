@@ -30,12 +30,6 @@ input[type="checkbox"]:checked + label
     background:url('../img/checked.png');
 }
 
-#nav
-{
-    padding:5px 10px;
-    background: #c99;
-}
-
 #contentBox {
     margin: 0 auto;
     width: 100%;
@@ -48,9 +42,4 @@ input[type="checkbox"]:checked + label
     display: inline-block;
     margin: 0;
     width: 33%;
-}
-
-#footer 
-{
-    clear: both;
 }
