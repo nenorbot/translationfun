@@ -1,5 +1,5 @@
 (ns translationfun.core
-  (:require [domina :refer [by-id by-class nodes append! value children text]]
+  (:require [domina :refer [by-id by-class nodes append! value children text destroy-children!]]
             [domina.events :refer [listen!]]
             [goog.net.WebSocket :as socket]
             [goog.events.EventHandler :as event]
@@ -12,15 +12,38 @@
    [cljs.core.async.macros :refer [go]]))
 
 (def translation-id 0)
+(def translations {})
+(def curr-start-idx 0)
+(def translations-num 3)
 
 (defn tcol-id [id]
-  (str "tcol" id))
+  (str "tcol" (mod (- id curr-start-idx) translations-num)))
+
+(defn shown? [id]
+  (and (>= id curr-start-idx) (<= id (+ curr-start-idx translations-num))))
+
+(defn append-to-col [col-id x]
+  (append! (by-id (tcol-id col-id))
+           (crate/html [:p x])))
+
+(defn redraw-all []
+  (with-alert
+    (doseq [k (range curr-start-idx (+ curr-start-idx translations-num))]
+      (destroy-children! (by-id (tcol-id k)))
+      (doseq [x (get translations k)]
+        (append-to-col k x)))))
 
 (defn add-result [x]
-  (with-alert 
-    (let [m (js->clj (JSON/parse (.-message x)) :keywordize-keys true)]
-      (append! (by-id (tcol-id (:id m)))
-               (crate/html [:p (:text m)])))))
+  (with-alert
+    (let [m (js->clj (JSON/parse (.-message x)) :keywordize-keys true)
+          {id :id text :text} m
+          result (str id " " text)]
+      (set! translations (assoc translations
+                         id
+                         (conj (get translations id [])
+                               result)))
+      (if (shown? id) 
+        (append-to-col id result)))))
 
 (defn parenthesize [s]
   (if (or (keyword? s) (string? s))
@@ -36,8 +59,8 @@
                      (filter #(.-checked %)
                              (nodes (by-class "checker"))))))
 
-(defn make-request []  
-  (to-json {:id translation-id
+(defn make-request [id]
+  (to-json {:id id
             :text (value (by-id "text"))
             :languages (checked-languages)
             :start-lang (value (by-id "from"))}))
@@ -52,7 +75,7 @@
                            (close! ch)))))
          ch)))
 
-(defn create-socket  []
+(defn create-socket  [id]
   (with-alert
     (go
      (let [socket (goog.net.WebSocket.)
@@ -60,15 +83,23 @@
            port (<! (get-port))]
        (.listen handler socket ws-event/MESSAGE add-result) ;; do this BEFORE
        ;; open
-       (.listen handler socket ws-event/OPENED #(.send socket (make-request)))
+       (.listen handler socket ws-event/OPENED #(.send socket (make-request id)))
        (.open socket (str "ws://localhost:" port "/ws"))
        socket))))
 
+(defn change-page [f]
+  (let [new-idx (f curr-start-idx)]
+    (when (and (>= new-idx 0) (<= new-idx (dec translation-id)))
+      (set! curr-start-idx new-idx)
+      (redraw-all))))
+
 (defn do-translation []
-  (set! translation-id (inc translation-id))
-  (append! (by-id "contentBox")
-           (crate/html [:div.column {:id (tcol-id translation-id)}]))
-  (create-socket))
+  (with-alert
+    (let [new-translation-id (inc translation-id)]
+      (if (not (shown? new-translation-id))
+        (change-page inc))    
+      (create-socket translation-id)
+      (set! translation-id new-translation-id))))
 
 (defn start-language? [s]
   (= s (value (by-id "from"))))
@@ -88,4 +119,6 @@
 
 (defn ^:export init []
   (draw-languages)
-  (listen! (by-id "clickme") :click do-translation))
+  (listen! (by-id "clickme") :click do-translation)
+  (listen! (by-id "next") :click (partial change-page inc))
+  (listen! (by-id "back") :click (partial change-page dec)))
