@@ -5,6 +5,9 @@
 
 (def languages-bing [Language/FRENCH Language/GERMAN Language/POLISH Language/DANISH Language/ROMANIAN Language/HEBREW Language/RUSSIAN Language/SPANISH Language/CZECH Language/JAPANESE Language/ARABIC Language/ITALIAN Language/ENGLISH Language/FINNISH Language/THAI])
 
+(defn languages []
+  (map #(clojure.string/capitalize (.name %)) languages-bing))
+
 (defn add-start-lang [languages start-lang]
   (cons start-lang (conj languages start-lang)))
 

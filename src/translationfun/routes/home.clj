@@ -4,11 +4,6 @@
   (:require [selmer.parser :refer [render-file]]
             [clojure.data.json :as json]))
 
-(def languages ["French" "German" "Polish" "Danish"
-                "Romanian" "Hebrew" "Russian" "Spanish"
-                "Czech" "Japanese" "Arabic" "Italian"
-                "Eglish" "Finnish" "Thai"])
-
 (defn send-port [request] (str (:server-port request)))
 
 (defn handle-request [channel data]
@@ -26,4 +21,4 @@
 
 (defn index [request]
   (render-file "translationfun/views/templates/index.html"
-               {:languages languages}))
+               {:languages (languages)}))
