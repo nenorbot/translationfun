@@ -1,8 +1,6 @@
 (ns translationfun.core
   (:require [domina :refer [by-id by-class nodes append! value children text]]
             [domina.events :refer [listen!]]
-            [domina.xpath :refer [xpath]]
-            [domina.css :refer [sel]]
             [goog.net.WebSocket :as socket]
             [goog.events.EventHandler :as event]
             [goog.net.WebSocket.EventType :as ws-event]
