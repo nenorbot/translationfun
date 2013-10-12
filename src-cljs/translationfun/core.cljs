@@ -1,5 +1,5 @@
 (ns translationfun.core
-  (:require [domina :refer [by-id by-class nodes append! value destroy-children!]]
+  (:require [domina :refer [by-id by-class nodes append! value children text]]
             [domina.events :refer [listen!]]
             [domina.xpath :refer [xpath]]
             [domina.css :refer [sel]]
@@ -12,11 +12,6 @@
   (:require-macros
    [translationfun.macros :refer [with-alert]]
    [cljs.core.async.macros :refer [go alt!]]))
-
-(def languages ["French" "German" "Polish" "Danish"
-                "Romanian" "Hebrew" "Russian" "Spanish"
-                "Czech" "Japanese" "Arabic" "Italian"
-                "English" "Finnish" "Thai"])
 
 (def translation-id 0)
 
@@ -84,14 +79,12 @@
   [:td
    [:input.checker {:type "checkbox" :id s :name s
                     :checked (not (start-language? s))}]
-   [:label {:for s}]])
+   [:label {:for s}] s])
 
 (defn draw-languages []
-  (doseq [x (sort languages)]
-    (append! (by-id "from")
-             (crate/html [:option {:value x} x])))
   (set! (.-value (by-id "from")) "English")
-  (doseq [x (partition 5 5 nil (sort languages))]
+  (doseq [x (partition 5 5 nil (sort
+                                (map text (children (by-id "from")))))]
     (append! (by-id "thru")
              (crate/html [:tr (map make-checkbox x)]))))
 
