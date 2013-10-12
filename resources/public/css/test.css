@@ -1,0 +1,56 @@
+#header
+{
+    padding:5px 10px;
+    margin-bottom: 10px;
+}
+
+textarea 
+{
+    resize: none;
+}
+
+input[type="checkbox"] 
+{
+    display:none;
+}
+
+input[type="checkbox"] + label
+{
+    display:inline-block;
+    width:32px;
+    height:32px;
+    vertical-align:middle;
+    margin:-1px 4px 0 0;
+    background:url('../img/unchecked.png') left top no-repeat;
+    cursor:pointer;
+}
+
+input[type="checkbox"]:checked + label
+{
+    background:url('../img/checked.png');
+}
+
+#nav
+{
+    padding:5px 10px;
+    background: #c99;
+}
+
+#contentBox {
+    margin: 0 auto;
+    width: 100%;
+    white-space: nowrap;
+    overflow: auto;
+    display: inline-block;
+}
+
+#contentBox .column {
+    display: inline-block;
+    margin: 0;
+    width: 33%;
+}
+
+#footer 
+{
+    clear: both;
+}

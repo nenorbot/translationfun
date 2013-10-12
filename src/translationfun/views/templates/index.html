@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;
+    charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="{{context}}/css/test.css">
+    <title>Fun with translations :)</title>
+  </head>
+  <body>
+    <div id="header">
+<table><tr><td>
+
+<textarea id="text" rows="5" cols="40">type something!</textarea>
+<br>     
+<button type="button" id="clickme">click</button>
+</td>
+<td>
+from: <br>
+      <select id="from">
+      </select>
+<td>
+<td>
+       thru:
+      <table id="thru"></table>
+</td></tr></table>        
+    </div>
+    <div id="nav">
+      <a href="" id="back">back</a> <a id="next">next</a>
+    </div>
+    <div id="contentBox">
+    </div>
+    <script src="{{context}}/js/transfun.js" type="text/javascript">
+    </script>
+    <script>
+      translationfun.core.init();
+    </script>
+  </body>
+</html>
