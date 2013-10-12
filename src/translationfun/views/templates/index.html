@@ -16,6 +16,9 @@
 <td>
 from: <br>
       <select id="from">
+        {% for lang in languages %}
+        <option value="{{lang}}">{{lang}}</option>
+        {% endfor %}
       </select>
 <td>
 <td>

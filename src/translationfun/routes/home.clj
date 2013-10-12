@@ -20,5 +20,5 @@
                           (future (handle-request channel data))))))
 
 (defn index [request]
-  (render-file "translationfun/views/templates/index.html"
+   (render-file "translationfun/views/templates/index.html"
                {:languages (languages)}))
